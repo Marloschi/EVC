@@ -35,7 +35,8 @@ def switch_channels(img: np.ndarray) -> np.ndarray:
     ### STUDENT CODE
     # TODO: Implement this function.
     out = img.copy()
-    out[:, :, 0], out[:, :, 1] = img[:, :, 1], img[:, :, 0]
+    out[:,:,[0,1]] = out[:,:,[1,0]]
+
     # NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
@@ -50,7 +51,8 @@ def image_mark_green(img: np.ndarray) -> np.ndarray:
     """
     ### STUDENT CODE
     # TODO: Implement this function.
-    mask = (img[:, :, 1] >= 0.7)
+    green_channel = img[:,:,1]
+    mask = (green_channel >= 0.7)
 
     # NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
@@ -67,7 +69,7 @@ def image_masked(img: np.ndarray, mask: np.ndarray) -> np.ndarray:
     ### STUDENT CODE
     # TODO: Implement this function.
     out = img.copy()
-    out[mask, :] = 0
+    out[mask == 1] = 0
     # NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
@@ -99,12 +101,11 @@ def cut_and_reshape(img_gray: np.ndarray) -> np.ndarray:
     """
     ### STUDENT CODE
     # TODO: Implement this function.
-    sideLength = img_gray.shape[0]
+    height,width = img_gray.shape
 
-    mid = sideLength // 2
-    left = img_gray[:, :mid]
-    right = img_gray[:, mid:]
-    out = np.vstack((left, right))
+    left = img_gray[:, :height//2]
+    right = img_gray[:, width//2:]
+    out = np.vstack((right, left))
 
     # NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
@@ -122,11 +123,39 @@ def filter_image(img: np.ndarray) -> np.ndarray:
 
     ### STUDENT CODE
     # TODO: Implement this function.
+    height, width, channels = img.shape
+    out = np.zeros_like(img)
 
+    # Kernel size and radius
+    k_size = 5
+    k_radius = k_size // 2
+
+    # Iterate over each pixel in the image
+    for y in range(height):
+        for x in range(width):
+            # Initialize sum for each channel
+            pixel_sum = [0.0, 0.0, 0.0]
+
+            # Iterate over kernel
+            for ky in range(-k_radius, k_radius + 1):
+                for kx in range(-k_radius, k_radius + 1):
+                    # Calculate image coordinates
+                    img_y = y + ky
+                    img_x = x + kx
+
+                    # Check if within image bounds
+                    if (0 <= img_y < height) and (0 <= img_x < width):
+                        # Multiply and accumulate for each channel
+                        for c in range(channels):
+                            pixel_sum[c] += img[img_y, img_x, c] * gaussian[ky + k_radius, kx + k_radius]
+                    # Else: treat as [0,0,0] (no addition needed)
+
+            # Assign the filtered value to output
+            for c in range(channels):
+                out[y, x, c] = pixel_sum[c]
     # NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    out = np.zeros(img.shape)
 
     ### END STUDENT CODE
 
@@ -139,11 +168,16 @@ def horizontal_edges(img: np.ndarray) -> np.ndarray:
     """
     ### STUDENT CODE
     # TODO: Implement this function.
+    G_horizontal = np.array([[1, 2, 1],
+                             [0, 0, 0],
+                             [-1, -2, -1]])
 
+    # Apply the filter using convolution
+    out = scipy.ndimage.correlate(img, G_horizontal, mode='constant', cval=0)
     # NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-    out = np.zeros(img.shape)
+
 
     ### END STUDENT CODE
 
