@@ -13,6 +13,7 @@ def read_img(inp: str) -> Image.Image:
     return img
 
 
+
 def convert(img: Image.Image) -> np.ndarray:
     """
         Converts a PIL image [0,255] to a numpy array [0,1].
