@@ -124,36 +124,15 @@ def filter_image(img: np.ndarray) -> np.ndarray:
 
     ### STUDENT CODE
     # TODO: Implement this function.
-    height, width, channels = img.shape
-    out = np.zeros_like(img)
+    height, width, colors = img.shape
+    out = np.zeros(img.shape)
+    padded = np.pad(img, ((2, 2), (2, 2), (0, 0)), mode='constant')
 
-    # Kernel size and radius
-    k_size = 5
-    k_radius = k_size // 2
-
-    # Iterate over each pixel in the image
     for y in range(height):
         for x in range(width):
-            # Initialize sum for each channel
-            pixel_sum = [0.0, 0.0, 0.0]
-
-            # Iterate over kernel
-            for ky in range(-k_radius, k_radius + 1):
-                for kx in range(-k_radius, k_radius + 1):
-                    # Calculate image coordinates
-                    img_y = y + ky
-                    img_x = x + kx
-
-                    # Check if within image bounds
-                    if (0 <= img_y < height) and (0 <= img_x < width):
-                        # Multiply and accumulate for each channel
-                        for c in range(channels):
-                            pixel_sum[c] += img[img_y, img_x, c] * gaussian[ky + k_radius, kx + k_radius]
-                    # Else: treat as [0,0,0] (no addition needed)
-
-            # Assign the filtered value to output
-            for c in range(channels):
-                out[y, x, c] = pixel_sum[c]
+            for c in range(colors):
+                region = padded[y:y + len(gaussian), x:x + len(gaussian), c]
+                out[y, x, c] = np.sum(region * gaussian)
     # NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
@@ -169,12 +148,12 @@ def horizontal_edges(img: np.ndarray) -> np.ndarray:
     """
     ### STUDENT CODE
     # TODO: Implement this function.
-    G_horizontal = np.array([[1, 2, 1],
+    sobel = np.array([[1, 2, 1],
                              [0, 0, 0],
                              [-1, -2, -1]])
 
     # Apply the filter using convolution
-    out = scipy.ndimage.correlate(img, G_horizontal, mode='constant', cval=0)
+    out = scipy.ndimage.correlate(img, sobel, mode='constant')
     # NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 

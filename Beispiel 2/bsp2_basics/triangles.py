@@ -15,7 +15,6 @@ def define_triangle() -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     # NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
-
     ### END STUDENT CODE
 
     return P1, P2, P3
@@ -40,9 +39,9 @@ def compute_lengths(P1P2: np.ndarray, P2P3: np.ndarray, P3P1: np.ndarray) -> Lis
     ### STUDENT CODE
     # TODO: Implement this function.
 
-    P1P2Length = np.sqrt(P1P2**2)
-    P2P3Length = np.sqrt(P2P3**2)
-    P3P1Length = np.sqrt(P3P1**2)
+    P1P2Length = np.sqrt(P1P2 ** 2)
+    P2P3Length = np.sqrt(P2P3 ** 2)
+    P3P1Length = np.sqrt(P3P1 ** 2)
     norms = [P1P2Length, P2P3Length, P3P1Length]
     # NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
@@ -57,10 +56,9 @@ def compute_normal_vector(P1P2: np.ndarray, P2P3: np.ndarray, P3P1: np.ndarray) 
     # TODO: Implement this function.
     n = np.cross(P1P2, P2P3)
     norm = np.linalg.norm(n)
-    n_normalized = n/norm if norm != 0 else n
+    n_normalized = n / norm if norm != 0 else n
     # NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
-
 
     ### END STUDENT CODE
 
@@ -72,10 +70,9 @@ def compute_triangle_area(n: np.ndarray) -> float:
     # TODO: Implement this function.
     norm = np.linalg.norm(n)
 
-    area = 0.5*norm if norm >= 0 else 0.5*(norm*(-1))
+    area = 0.5 * norm if norm >= 0 else 0.5 * (norm * (-1))
     # NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
-
 
     ### END STUDENT CODE
 

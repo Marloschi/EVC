@@ -95,7 +95,13 @@ def transform_vertices(v: np.ndarray, m: np.ndarray) -> np.ndarray:
     """
     ### STUDENT CODE
     # TODO: Implement this function.
-    out = m @ v
+    out = np.zeros((len(m), len(v[0])))
+
+    for i in range(len(v[0])):
+        temp = m @ [v[0][i], v[1][i], v[2][i]]
+        out[0][i] = temp[0]
+        out[1][i] = temp[1]
+        out[2][i] = temp[2]
     # NOTE: The following lines can be removed. They prevent the framework
     #       from crashing.
 
